@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nestjs-terraform-deployment
+  namespace: default
+  labels:
+    app: main-app
+  description: main-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nest-terraform
+  template:
+    metadata:
+      labels:
+        app: nest-terraform
+    spec:
+      containers:
+        - name: app-nestjs-terraform
+          image: 222634373780.dkr.ecr.us-east-1.amazonaws.com/nest-terraform-eks:v1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 80
+              name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-nest-terraform
+  namespace: default
+  labels:
+    app: nest-terraform
+spec:
+  selector:
+    app: nest-terraform
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
